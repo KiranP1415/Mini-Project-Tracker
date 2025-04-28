@@ -1,0 +1,70 @@
+{% extends 'tracker/base.html' %} {% block content %}
+<h2>Dashboard</h2>
+
+<!-- Display summary data -->
+<div class="dashboard-summary">
+  <p><strong>Total Projects:</strong> {{ total_projects }}</p>
+  <p><strong>Total Tasks:</strong> {{ total_tasks }}</p>
+  <p><strong>Overdue Tasks:</strong> {{ overdue_tasks }}</p>
+
+  <!-- Display tasks per status -->
+  <div>
+    <p><strong>Tasks by Status:</strong></p>
+    <ul>
+      {% for status in tasks_by_status %}
+      <li>{{ status.status }}: {{ status.count }} tasks</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<!-- Chart for tasks per status -->
+<div class="chart-container" style="width: 50%; height: 300px">
+  <canvas id="taskStatusChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  var taskData = {
+      todo: 0,
+      inprogress: 0,
+      done: 0
+  };
+
+  {% for status in tasks_by_status %}
+      {% if status.status == 'todo' %}
+          taskData.todo = {{ status.count }};
+      {% endif %}
+      {% if status.status == 'inprogress' %}
+          taskData.inprogress = {{ status.count }};
+      {% endif %}
+      {% if status.status == 'done' %}
+          taskData.done = {{ status.count }};
+      {% endif %}
+  {% endfor %}
+
+  var ctx = document.getElementById('taskStatusChart').getContext('2d');
+  var taskStatusChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+          labels: ['To Do', 'In Progress', 'Done'],
+          datasets: [{
+              label: 'Tasks per Status',
+              data: [taskData.todo, taskData.inprogress, taskData.done],
+              backgroundColor: ['#f39c12', '#3498db', '#2ecc71'],
+              borderColor: ['#f39c12', '#3498db', '#2ecc71'],
+              borderWidth: 1
+          }]
+      },
+      options: {
+          responsive: true,
+          scales: {
+              y: {
+                  beginAtZero: true
+              }
+          }
+      }
+  });
+</script>
+
+{% endblock %}

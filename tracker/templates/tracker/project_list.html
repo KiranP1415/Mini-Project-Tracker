@@ -1,0 +1,27 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<h2>Projects</h2>
+<a href="{% url 'project_create' %}" class="btn">+ Create Project</a>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Pending Tasks</th>
+        <th>Actions</th>
+    </tr>
+    {% for project in projects %}
+    <tr>
+        <td>{{ project.name }}</td>
+        <td>{{ project.status }}</td>
+        <td>{{ project.pending_task_count }}</td>  <!-- Display the count here -->
+        <td>
+            {% if project.status != 'archived' %}
+            <a href="{% url 'project_archive' project.pk %}">Archive</a>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

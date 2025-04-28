@@ -1,0 +1,36 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<h2>Tasks</h2>
+<a href="{% url 'task_create' %}" class="btn">+ Create Task</a>
+
+<form method="get">
+    {{ form.as_p }}
+    <button type="submit" class="btn">Filter</button>
+</form>
+
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Project</th>
+        <th>Assigned To</th>
+        <th>Due</th>
+        <th>Priority</th>
+        <th>Status</th>
+        <th>Overdue</th>
+        <th>Actions</th>
+    </tr>
+    {% for task in tasks %}
+    <tr>
+        <td>{{ task.title }}</td>
+        <td>{{ task.project.name }}</td>
+        <td>{{ task.assigned_to.name }}</td>
+        <td>{{ task.due_date }}</td>
+        <td>{{ task.priority }}</td>
+        <td>{{ task.status }}</td>
+        <td>{% if task.is_overdue %}⚠️{% endif %}</td>
+        <td><a href="{% url 'task_update' task.pk %}">Edit</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
